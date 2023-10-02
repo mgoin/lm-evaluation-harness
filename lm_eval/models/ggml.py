@@ -26,7 +26,7 @@ class GGMLLM(BaseLM):
                 prompt = context
                 if continuation:
                     prompt += continuation
-                request = {'prompt': prompt, 'logprobs': self.logpobs}
+                request = {'prompt': prompt, 'logprobs': self.logpobs, 'max_tokens': 256, 'temperature': 0}
                 if stop is not None:
                     request['stop'] = stop
                 response = requests.post(f"{self.base_url}/v1/completions", json=request)
