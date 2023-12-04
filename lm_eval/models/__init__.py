@@ -1,6 +1,7 @@
 from . import huggingface
 from . import openai_completions
 from . import textsynth
+from . import neuralmagic
 from . import dummy
 from . import anthropic_llms
 from . import gguf
