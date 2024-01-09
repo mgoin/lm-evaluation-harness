@@ -108,7 +108,7 @@ def _num_cpu_cores():
 
 
 class _SCROLLSTask(Task):
-    VERSION = 0
+    VERSION = 1
     DATASET_PATH = "tau/scrolls"
     DATASET_NAME = None
     PRUNE_TOKENIZERS = None
@@ -235,7 +235,6 @@ class _SCROLLSMultipleChoiceTask(_SCROLLSTask):
         }
 
     def construct_requests(self, doc, ctx, **kwargs):
-
         request_list = [
             Instance(
                 request_type="loglikelihood",
@@ -244,7 +243,7 @@ class _SCROLLSMultipleChoiceTask(_SCROLLSTask):
                 idx=i,
                 **kwargs,
             )
-            for i, choice in doc["choices"]
+            for i, choice in enumerate(doc["choices"])
         ]
         return request_list
 

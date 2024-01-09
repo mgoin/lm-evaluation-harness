@@ -1,18 +1,20 @@
 import argparse
-import numpy as np
-import json
 import os
 import random
+
+import numpy as np
+
 from lm_eval import tasks
-from lm_eval.utils import join_iters, eval_logger
-from lm_eval.tasks import initialize_tasks, include_path
+from lm_eval.tasks import include_path, initialize_tasks
+from lm_eval.utils import eval_logger, join_iters
+
 
 EXAMPLE_DIVIDER = "!!@@##@@!! -- Example {i}\n"
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output_base_path", required=True)
+    parser.add_argument("--output_base_path", "--output_path", required=True)
     parser.add_argument("--tasks", default="all_tasks")
     parser.add_argument("--sets", type=str, default="val")  # example: val,test
     parser.add_argument("--num_fewshot", type=int, default=1)
@@ -51,6 +53,8 @@ def main():
 
     os.makedirs(args.output_base_path, exist_ok=True)
     for task_name, task in task_dict.items():
+        if type(task) == tuple:
+            group_name, task = task
         rnd = random.Random()
         rnd.seed(args.seed)
 

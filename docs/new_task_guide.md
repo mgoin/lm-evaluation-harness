@@ -2,7 +2,9 @@
 
 `lm-evaluation-harness` is a framework that strives to support a wide range of zero- and few-shot evaluation tasks on autoregressive language models (LMs).
 
-This documentation page provides a walkthrough to get started creating your own task, on the `big-refactor` branch of the repository (which will be v0.5.0 in the future.)
+This documentation page provides a walkthrough to get started creating your own task, in `lm-eval` versions v0.4.0 and later.
+
+A more interactive tutorial is available as a Jupyter notebook [here](https://github.com/EleutherAI/lm-evaluation-harness/blob/main/examples/lm-eval-overview.ipynb).
 
 ## Setup
 
@@ -12,12 +14,11 @@ If you haven't already, go ahead and fork the main repo, clone it, create a bran
 # After forking...
 git clone https://github.com/<YOUR-USERNAME>/lm-evaluation-harness.git
 cd lm-evaluation-harness
-git checkout big-refactor
 git checkout -b <task-name>
 pip install -e ".[dev]"
 ```
 
-In this document, we'll walk through the basics of implementing a static benchmark evaluation in two formats: a *generative* task which requires sampling text from a model, such as [`gsm8k`](https://github.com/EleutherAI/lm-evaluation-harness/blob/big-refactor/lm_eval/tasks/gsm8k/gsm8k.yaml), and a *discriminative*, or *multiple choice*, task where the model picks the most likely of several fixed answer choices, such as [`sciq`](https://github.com/EleutherAI/lm-evaluation-harness/blob/big-refactor/lm_eval/tasks/sciq/sciq.yaml).
+In this document, we'll walk through the basics of implementing a static benchmark evaluation in two formats: a *generative* task which requires sampling text from a model, such as [`gsm8k`](https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/tasks/gsm8k/gsm8k.yaml), and a *discriminative*, or *multiple choice*, task where the model picks the most likely of several fixed answer choices, such as [`sciq`](https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/tasks/sciq/sciq.yaml).
 
 ## Creating a YAML file
 
@@ -121,6 +122,13 @@ doc_to_target: 3
 ```yaml
 doc_to_choice: ['No', 'Yes']
 ```
+
+if a dataset feature is already a list, you can set the name of the feature as `doc_to_choice` (See [Hellaswag](https://github.com/EleutherAI/lm-evaluation-harness/blob/e0eda4d3ffa10e5f65e0976161cd134bec61983a/lm_eval/tasks/hellaswag/hellaswag.yaml#L13))
+```
+doc_to_choice: choices
+```
+
+
 
 ### Writing a prompt with Jinja 2
 
@@ -307,6 +315,25 @@ python -m scripts.write_out \
 Open the file specified at the `--output_base_path <path>` and ensure it passes
 a simple eye test.
 
+## Versioning
+
+One key feature in LM Evaluation Harness is the ability to version tasks--that is, mark them with a specific version number that can be bumped whenever a breaking change is made.
+
+This version info can be provided by adding the following to your new task config file:
+
+```
+metadata:
+  version: 0
+```
+
+Now, whenever a change needs to be made to your task in the future, please increase the version number by 1 so that users can differentiate the different task iterations and versions.
+
+If you are incrementing a task's version, please also consider adding a changelog to the task's README.md noting the date, PR number, what version you have updated to, and a one-liner describing the change.
+
+for example,
+
+* \[Dec 25, 2023\] (PR #999) Version 0.0 -> 1.0: Fixed a bug with answer extraction that led to underestimated performance.
+
 ## Checking performance + equivalence
 
 It's now time to check models' performance on your task! In the evaluation harness, we intend to support a wide range of evaluation tasks and setups, but prioritize the inclusion of already-proven benchmarks following the precise evaluation setups in the literature where possible.
@@ -332,4 +359,4 @@ It is recommended to include a filled-out copy of this checklist in the README.m
 
 ## Submitting your task
 
-You're all set! Now push your work and make a pull request to the `big-refactor` branch! Thanks for the contribution :). If there are any questions, please leave a message in the `#lm-thunderdome` channel on the EAI discord!
+You're all set! Now push your work and make a pull request to the `main` branch! Thanks for the contribution :). If there are any questions, please leave a message in the `#lm-thunderdome` channel on the EAI discord!
